@@ -26,6 +26,16 @@
         1. Top-P limits the pool of choices before the temperature is applied. 
         2. A setting of `top_p=0.95` tells the model to only consider the top 95% of the most likely tokens, cutting off the bottom 5% of absolute nonsense.
         3. This acts as a safety net. It ensures that even at higher creative temperatures (0.7–1.0), the model is physically blocked from choosing completely irrelevant words.
+#### So when we are making agents suppose for particular application.When we have a team of agents the fact-checker will have a temperature of 0,0.7 for the researcher for creative angles(you know to add a little jazz),Skeptic 0.5 so that not that much jazz but structured and should be able to argue
+
+### System Prompt
+#### 1. This the the invisible prompt given to the model.Its like a job description which usally is given to the employees on their first day.
+#### 2. This will the the agent how to act and what is its job
+#### 3. The model treats it as ground truth
+#### 4. In production systems it is stored in text files
+#### 5. A good prompt ensures that the agent works efficiently and rightly
+#### 6. Also always the system prompt must consider the edge cases not just the happy path 
+
 
 
 
