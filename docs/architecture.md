@@ -1,5 +1,18 @@
 # Architecture Documentation
 
+## Agent Temperature Map
+
+| Agent | Temperature | Reason |
+|---|---|---|
+| Orchestrator | 0 | Pure logic, deterministic routing, no creativity needed |
+| News Agent | 0.7 | Needs creative angle finding across different sources |
+| Financial Agent | 0 | Numbers are facts, must be precise and repeatable |
+| Risk Scorer | 0 | Scoring must be deterministic, same input = same score |
+| Contradiction Agent | 0.3 | Mostly factual but needs flexibility to spot subtle mismatches |
+| Sentiment Agent | 0.5 | Structured analysis but needs nuance to read tone |
+| Report Agent | 0.7 | Memo must be readable and well written, not robotic |
+
+
 ## core/context.py — FinancialContext
 
 ### What it is
