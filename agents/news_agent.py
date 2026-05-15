@@ -44,35 +44,73 @@ async def search_news(company_name : str,ticker : str) -> list[str]:
 
     return results
 
-def summarize_news(raw_results : list[str] , company_name : str) -> str:
-    """This will summarize the results for the company using the new results from the search part"""
+def summarize_news(raw_results: list[str], company_name: str) -> dict:
+    """Sends raw news to Groq, gets back structured JSON."""
     news_text = "\n".join(raw_results)
-
     response = client.chat.completions.create(
-        model = "llama-3.1-8b-instant",
-        messages = [
-            {"role":"system","content":NEWS_AGENT_PROMPT},
+        model="llama-3.1-8b-instant",
+        messages=[
+            {"role": "system", "content": NEWS_AGENT_PROMPT},
             {
-                "role":"user",
-                "content":f"summarize these news about {company_name}:\n\n{news_text}"
+                "role": "user",
+                "content": f"Filter and structure this news about {company_name}:\n\n{news_text}"
             }
         ],
-        temperature=0,
-        max_tokens=1000,
+        temperature=0.7,
+        max_tokens=1500,
     )
-    return response.choices[0].message.content
+    raw = response.choices[0].message.content
+
+    # Strip markdown code fences if Groq wraps response in ```json
+    clean = raw.strip()
+    if clean.startswith("```"):
+        clean = clean.split("```")[1]
+        if clean.startswith("json"):
+            clean = clean[4:]
+    clean = clean.strip()
+
+    try:
+        return json.loads(clean)
+    except json.JSONDecodeError:
+        # If Groq doesn't return valid JSON, return a safe default
+        return {
+            "news_articles": raw_results,
+            "news_summary": raw,
+            "risk_signals": []
+        }
 
 async def run(context: FinancialContext) -> FinancialContext:
+    """Main agent function — orchestrator calls this."""
+
     context.current_agent = "news_agent"
     context.audit_log.append(
-        f"[news_agent] started: searching for news {context.ticker}"
+        f"[news_agent] started — searching news for {context.ticker}"
     )
-    raw_news = await search_news(context.company_name,context.ticker)
-    summary = summarize_news(raw_news,context.company_name)
-    context.news_articles = raw_news
+
+    # Step 1 — fetch real news from NewsAPI
+    raw_news = await search_news(context.company_name, context.ticker)
+
+    # Step 2 — send to Groq for filtering and structuring
+    structured = summarize_news(raw_news, context.company_name)
+
+    # Step 3 — write structured results back to context
+    articles = structured.get("news_articles", [])
+    context.news_articles = [
+        f"{a.get('title', '')} — {a.get('summary', '')} (Source: {a.get('source', '')}, {a.get('date', '')})"
+        if isinstance(a, dict) else str(a)
+        for a in articles
+    ]
+    context.news_summary = structured.get("news_summary", "")
+
+    # Step 4 — update audit log
+    risk_signals = structured.get("risk_signals", [])
     context.audit_log.append(
-    f"[news_agent] summary : {summary}"
+        f"[news_agent] completed — {len(context.news_articles)} relevant articles, "
+        f"{len(risk_signals)} risk signals found"
     )
-    context.tokens_used += 1000
+
+    # Step 5 — token tracking
+    context.tokens_used += 1500
+
     return context
 

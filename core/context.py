@@ -20,6 +20,7 @@ class FinancialContext(BaseModel):
 
     #News Agent
     news_articles: list[str] = Field(default_factory=list)
+    news_summary: Optional[str] = None
 
     #prduced by risk scorer
     liquidity_risk : Optional[float] = None
