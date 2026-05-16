@@ -34,7 +34,10 @@ class FinancialContext(BaseModel):
     #prduced by risk scorer
     liquidity_risk : Optional[float] = None
     credit_risk : Optional[float] = None
+    concentration_risk : Optional[float] = None
+    market_risk : Optional[float] = None
     overall_risk : Optional[float] = None
+    risk_analysis : Optional[str] = None
 
     #Contradictions agent produces
     contradictions : list[str] = Field(default_factory=list)
