@@ -25,6 +25,7 @@ class FinancialContext(BaseModel):
     gross_margins: Optional[float] = None
     financial_data_quality: Optional[str] = None
     missing_financial_fields: list[str] = Field(default_factory=list)
+    financial_analysis: Optional[str] = None
 
     #News Agent
     news_articles: list[str] = Field(default_factory=list)
