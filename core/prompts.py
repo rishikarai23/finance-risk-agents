@@ -159,14 +159,24 @@ Analyze:
 - Insider activity: buying or selling?
 - Analyst sentiment: upgrades or downgrades?
 
-Output a sentiment score from -1.0 (very negative) to 1.0 (very positive).
-List the top 3 sentiment signals that drove your score.
+Always output strict JSON:
+{
+    "sentiment_score": float between -1.0 and 1.0,
+    "sentiment_label": "very negative / negative / neutral / positive / very positive",
+    "signals": [
+        "signal 1",
+        "signal 2", 
+        "signal 3"
+    ],
+    "confidence": "high / medium / low",
+    "reasoning": "one paragraph explanation"
+}
 
 Edge cases:
 - If no executive statements available: base score on news sentiment only, flag as partial
 - If insider trading data unavailable: note explicitly, do not assume neutral
 - If sentiment is mixed with equal positive and negative signals: score 0.0 and list both sides
-- If only one or two articles available: flag as low confidence due to small sample size
+- If only one or two articles available: set confidence to low
 """
 
 REPORT_AGENT_PROMPT = """
