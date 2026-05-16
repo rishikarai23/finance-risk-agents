@@ -47,7 +47,7 @@ class FinancialContext(BaseModel):
     sentiment_signals : list[str] = Field(default_factory=list)
 
     #Report Agents
-    final_memo : list[str] = Field(default_factory=list)
+    final_memo : Optional[str] = None
 
     #Orchestrator Agent
     tokens_used: int = 0
