@@ -71,9 +71,14 @@ async def run(context:FinancialContext) -> FinancialContext:
     )
     input_data = prepare_input_data(context)
     groq_output = get_contradictions(input_data,context.company_name)
-    context.contradictions = groq_output.get("contradictions") or []
+    raw_contradictions = groq_output.get("contradictions") or []
+    context.contradictions = [
+        f"{c.get('claim', '')} — Reality: {c.get('reality', '')} (Severity: {c.get('severity', '')}, Source: {c.get('source', '')})"
+        if isinstance(c, dict) else str(c)
+        for c in raw_contradictions
+    ]
     context.audit_log.append(
-        f"[contradiction agent] ended : there were {len(context.contradictions)}"
+            f"[contradiction agent] ended : there were {len(context.contradictions)}"
     )
     context.tokens_used += 1500
     return context
