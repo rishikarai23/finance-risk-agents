@@ -14,9 +14,17 @@ class FinancialContext(BaseModel):
 
     #variables produced by financial data agents
     #price to earnings ratio
+    # --- Financial Data Agent ---
     pe_ratio: Optional[float] = None
     debt_to_equity: Optional[float] = None
     revenue_growth: Optional[float] = None
+    current_ratio: Optional[float] = None
+    return_on_equity: Optional[float] = None
+    market_cap: Optional[float] = None
+    total_revenue: Optional[float] = None
+    gross_margins: Optional[float] = None
+    financial_data_quality: Optional[str] = None
+    missing_financial_fields: list[str] = Field(default_factory=list)
 
     #News Agent
     news_articles: list[str] = Field(default_factory=list)
