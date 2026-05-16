@@ -87,13 +87,10 @@ async def run(context: FinancialContext) -> FinancialContext:
         f"[news_agent] started — searching news for {context.ticker}"
     )
 
-    # Step 1 — fetch real news from NewsAPI
     raw_news = await search_news(context.company_name, context.ticker)
 
-    # Step 2 — send to Groq for filtering and structuring
     structured = summarize_news(raw_news, context.company_name)
 
-    # Step 3 — write structured results back to context
     articles = structured.get("news_articles", [])
     context.news_articles = [
         f"{a.get('title', '')} — {a.get('summary', '')} (Source: {a.get('source', '')}, {a.get('date', '')})"

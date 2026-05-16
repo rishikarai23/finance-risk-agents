@@ -108,8 +108,10 @@ Always output strict JSON:
 Edge cases:
 - If financial data is missing or stale: increase uncertainty, set overall_risk to 7.0 minimum
 - If company is pre-revenue: automatically set liquidity_risk to 8.0 minimum
-- If fewer than 2 data points available: add "low_confidence": true to JSON output
-- Never leave a field as null — use 5.0 as neutral score when data is insufficient
+- If fewer than 3 data points available: default all missing scores to 7.0, not 5.0
+- Missing data is a risk signal itself — incomplete information increases uncertainty
+- Negative revenue growth automatically sets overall_risk minimum to 6.5
+- Never leave a field as null — use 7.0 as cautious default when data is insufficient
 """
 
 CONTRADICTION_AGENT_PROMPT = """
