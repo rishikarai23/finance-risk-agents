@@ -1,10 +1,10 @@
-# Finance Risk Intelligence — Multi-Agent System
+# Finance Risk Intelligence: Multi-Agent System
 
 A production-grade multi-agent AI system that performs automated financial risk analysis on any publicly traded company. Built with 6 specialized AI agents, a master orchestrator, real-time WebSocket streaming, and a full audit trail.
 
 ## What it does
 
-Give it a company ticker and name. Seven specialized agents research it from different angles, cross-check each other's findings, detect contradictions, and produce a structured risk memo — the kind a financial analyst would write manually.
+Give it a company ticker and name. Seven specialized agents research it from different angles, cross-check each other's findings, detect contradictions, and produce a structured risk memo,the kind a financial analyst would write manually.
 
 ## Architecture
 
