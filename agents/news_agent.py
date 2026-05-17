@@ -15,7 +15,6 @@ client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 async def search_news(company_name : str,ticker : str) -> list[str]:
     current_year = datetime.datetime.now().year
-    """Fetches real headlines using duckduckgo"""
     news_api_key = os.getenv("NEWS_API_KEY")
     url = "https://newsapi.org/v2/everything"
     params = {

@@ -3,4 +3,5 @@ v
 finance_risk_agents.egg-info
 core/__pycache__
 agents/__pycache__
+api/__pycache__
 test_news_search.py
