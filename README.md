@@ -127,10 +127,10 @@ curl -X POST http://localhost:8000/analyze \
 
 | Company | Overall Risk | Result |
 |---|---|---|
-| Apple (AAPL) | 5.75/10 | Medium risk ✅ |
-| SVB (SIVBQ) | 8.0/10 | High risk ✅ (collapsed 2023) |
-| Beyond Meat (BYND) | 7.0/10 | High risk ✅ (struggling) |
-| Tesla (TSLA) | 7.5/10 | Medium-high risk ✅ |
+| Apple (AAPL) | 5.75/10 | Medium risk |
+| SVB (SIVBQ) | 8.0/10 | High risk (collapsed 2023) |
+| Beyond Meat (BYND) | 7.0/10 | High risk (struggling) |
+| Tesla (TSLA) | 7.5/10 | Medium-high risk|
 
 ## Roadmap
 
