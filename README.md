@@ -2,7 +2,6 @@
 
 A multi-agent AI system for automated financial risk analysis of publicly traded companies. The system combines specialized agents, centralized state management, real-time streaming, and a full audit trail to generate structured financial risk reports.
 
----
 
 ## What it does
 
@@ -18,7 +17,6 @@ The system launches specialized AI agents that:
 
 The output resembles the workflow of a financial analyst, but is fully automated.
 
----
 
 ## Architecture
 
@@ -42,22 +40,18 @@ User Request
 Master Orchestrator
 (token budget, routing, fault tolerance)
       ↓
-
-┌─────────────────────────────────────────┐
-│ News Agent       → NewsAPI search      │
-│ Financial Agent  → Yahoo Finance data  │
-│ Risk Scorer      → 4D risk analysis    │
-│ Contradiction    → Cross-agent checks  │
-│ Sentiment Agent  → Tone analysis       │
-│ Report Agent     → Structured memo     │
-└─────────────────────────────────────────┘
+ News Agent       → NewsAPI search      
+ Financial Agent  → Yahoo Finance data  
+ Risk Scorer      → 4D risk analysis    
+ Contradiction    → Cross-agent checks  
+ Sentiment Agent  → Tone analysis       
+ Report Agent     → Structured memo     
 
       ↓
 
 Risk Memo + Audit Trail
 ```
 
----
 
 ## Agent Temperature Map
 
@@ -71,7 +65,6 @@ Risk Memo + Audit Trail
 | Sentiment Agent | 0.5 | Nuanced tone analysis |
 | Report Agent | 0.7 | Human-readable report generation |
 
----
 
 ## Tech Stack
 
@@ -87,7 +80,7 @@ Risk Memo + Audit Trail
 | ChromaDB | Long-term memory |
 | Docker Compose | Containerization |
 
----
+
 
 ## API Endpoints
 
@@ -121,7 +114,6 @@ GET /docs
 
 Interactive Swagger UI available through FastAPI.
 
----
 
 ## Sample Output
 
@@ -135,7 +127,6 @@ Interactive Swagger UI available through FastAPI.
 }
 ```
 
----
 
 ## Setup
 
@@ -180,7 +171,6 @@ curl -X POST http://localhost:8000/analyze \
 -d '{"ticker":"AAPL","company_name":"Apple Inc"}'
 ```
 
----
 
 ## Key Design Decisions
 
@@ -195,7 +185,6 @@ Benefits:
 - Simplified debugging
 - Plug-and-play agent replacement
 
----
 
 ### Token Budget Enforcement
 
@@ -206,7 +195,6 @@ Benefits:
 - Prevents excessive inference cost
 - Maintains predictable execution
 
----
 
 ### Fault Tolerance
 
@@ -217,7 +205,6 @@ Benefits:
 - Single-agent failure does not terminate the pipeline
 - Partial reports remain available
 
----
 
 ### Typed State Validation
 
@@ -228,7 +215,6 @@ Benefits:
 - Early error detection
 - Reduced runtime failures
 
----
 
 ### Real Data Sources
 
@@ -240,7 +226,6 @@ All external information comes from live services:
 
 No mock data is used.
 
----
 
 ## Validation Results
 
@@ -251,7 +236,6 @@ No mock data is used.
 | Beyond Meat (BYND) | 7.00/10 | High |
 | Tesla (TSLA) | 7.50/10 | Medium–High |
 
----
 
 ## Roadmap
 
@@ -261,7 +245,6 @@ No mock data is used.
 - [ ] Frontend dashboard
 - [ ] Streaming synthesis improvements
 
----
 
 ## Known Limitations
 
@@ -270,7 +253,6 @@ No mock data is used.
 - LLM-based evaluation can introduce model bias
 - Authentication not yet implemented
 
----
 
 ## Production Safety Backlog
 
