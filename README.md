@@ -1,15 +1,38 @@
 # Finance Risk Intelligence: Multi-Agent System
 
-A production-grade multi-agent AI system that performs automated financial risk analysis on any publicly traded company. Built with 6 specialized AI agents, a master orchestrator, real-time WebSocket streaming, and a full audit trail.
+A multi-agent AI system for automated financial risk analysis of publicly traded companies. The system combines specialized agents, centralized state management, real-time streaming, and a full audit trail to generate structured financial risk reports.
+
+---
 
 ## What it does
 
-Give it a company ticker and name. Seven specialized agents research it from different angles, cross-check each other's findings, detect contradictions, and produce a structured risk memo,the kind a financial analyst would write manually.
+Provide a company ticker and company name.
+
+The system launches specialized AI agents that:
+
+- Gather financial and news data
+- Analyze market sentiment
+- Compute multidimensional risk scores
+- Detect inconsistencies across findings
+- Generate a structured analyst-style risk memo
+
+The output resembles the workflow of a financial analyst, but is fully automated.
+
+---
 
 ## Architecture
-This system uses a **blackboard architecture** where all agents communicate only through a shared typed state object (`FinancialContext`) built with **Pydantic v2**. Agents never communicate directly with each other.
 
-The shared context acts as a central memory layer where agents read existing information and write updates back into the system.
+This system follows a **blackboard architecture** where all agents communicate through a shared typed state object (`FinancialContext`) implemented using **Pydantic v2**.
+
+Agents never communicate directly with each other.
+
+Instead:
+
+```text
+Agent → FinancialContext → Agent
+```
+
+The shared state acts as a central memory layer where agents read existing information and write updated results.
 
 ### Workflow
 
@@ -21,7 +44,7 @@ Master Orchestrator
       ↓
 
 ┌─────────────────────────────────────────┐
-│ News Agent       → Real NewsAPI search │
+│ News Agent       → NewsAPI search      │
 │ Financial Agent  → Yahoo Finance data  │
 │ Risk Scorer      → 4D risk analysis    │
 │ Contradiction    → Cross-agent checks  │
@@ -32,135 +55,227 @@ Master Orchestrator
       ↓
 
 Risk Memo + Audit Trail
+```
+
+---
 
 ## Agent Temperature Map
 
-| Agent | Temperature | Reason |
-|---|---|---|
-| Orchestrator | 0 | Deterministic routing |
-| News Agent | 0.7 | Creative angle finding |
-| Financial Agent | 0 | Numbers are facts |
-| Risk Scorer | 0 | Repeatable scoring |
-| Contradiction Agent | 0.3 | Structured skepticism |
-| Sentiment Agent | 0.5 | Nuanced tone reading |
-| Report Agent | 0.7 | Readable prose |
+| Agent | Temperature | Purpose |
+|---|---:|---|
+| Orchestrator | 0.0 | Deterministic routing |
+| News Agent | 0.7 | Broader information exploration |
+| Financial Agent | 0.0 | Deterministic factual analysis |
+| Risk Scorer | 0.0 | Consistent scoring |
+| Contradiction Agent | 0.3 | Structured validation |
+| Sentiment Agent | 0.5 | Nuanced tone analysis |
+| Report Agent | 0.7 | Human-readable report generation |
+
+---
 
 ## Tech Stack
 
-| Tool | Purpose |
+| Technology | Purpose |
 |---|---|
 | Python 3.12+ | Core language |
-| Groq API | LLM inference (llama-3.1-8b-instant) |
+| Groq API | LLM inference (`llama-3.1-8b-instant`) |
 | LangGraph | Agent orchestration |
 | Pydantic v2 | Typed state validation |
 | FastAPI | REST and WebSocket API |
-| yfinance | Real financial data |
-| NewsAPI | Real news articles |
-| ChromaDB | Vector DB (long term memory) |
+| yfinance | Financial data |
+| NewsAPI | News retrieval |
+| ChromaDB | Long-term memory |
 | Docker Compose | Containerization |
+
+---
 
 ## API Endpoints
 
 ### REST
-POST /analyze
+
+**POST /analyze**
+
+```json
 {
-"ticker": "AAPL",
-"company_name": "Apple Inc",
-"max_tokens": 50000
+    "ticker":"AAPL",
+    "company_name":"Apple Inc",
+    "max_tokens":50000
 }
+```
 
-### WebSocket (real-time streaming)
-WS /analyze/stream
-→ live agent updates as each one completes
-→ final memo on completion
+### WebSocket
 
-### Docs
-GET /docs   → interactive Swagger UI
+**WS /analyze/stream**
+
+Features:
+
+- Live agent execution updates
+- Incremental status messages
+- Final memo upon completion
+
+### Documentation
+
+```text
+GET /docs
+```
+
+Interactive Swagger UI available through FastAPI.
+
+---
 
 ## Sample Output
 
 ```json
 {
-  "overall_risk": 5.75,
-  "sentiment_score": -0.4,
-  "contradictions": 4,
-  "final_memo": "MEDIUM RISK — Apple Inc shows strong profitability...",
-  "tokens_used": 9500
+  "overall_risk":5.75,
+  "sentiment_score":-0.4,
+  "contradictions":4,
+  "final_memo":"MEDIUM RISK — Apple Inc shows strong profitability...",
+  "tokens_used":9500
 }
 ```
 
+---
+
 ## Setup
 
-### 1. Clone and install
+### Clone repository
+
 ```bash
 git clone https://github.com/rishikarai23/Multi_Agent.git
+
 cd Multi_Agent
+
 python3 -m venv venv
+
 source venv/bin/activate
+
 pip install ".[dev]"
 ```
 
-### 2. Environment variables
+### Configure environment
+
 ```bash
 cp .env.example .env
-# Add your keys:
-# GROQ_API_KEY=
-# NEWS_API_KEY=
 ```
 
-### 3. Run the API
+Add:
+
+```env
+GROQ_API_KEY=
+NEWS_API_KEY=
+```
+
+### Run API
+
 ```bash
 uvicorn api.main:app --reload --port 8000
 ```
 
-### 4. Test it
+### Test API
+
 ```bash
 curl -X POST http://localhost:8000/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"ticker": "AAPL", "company_name": "Apple Inc"}'
+-H "Content-Type: application/json" \
+-d '{"ticker":"AAPL","company_name":"Apple Inc"}'
 ```
+
+---
 
 ## Key Design Decisions
 
-**Blackboard architecture** — agents never communicate directly. All state flows through `FinancialContext`. This means any agent can be swapped, upgraded, or removed without touching the others.
+### Blackboard Architecture
 
-**Token budget enforcement** — the orchestrator tracks token usage per agent and skips agents when budget is exhausted. Prevents cost overruns on complex queries.
+Agents never communicate directly.
 
-**Fault tolerance** — each agent runs inside a try/except block. One agent failing doesn't crash the pipeline. The report agent produces a memo with whatever data is available.
+Benefits:
 
-**Typed state** — Pydantic v2 with `validate_assignment=True` catches wrong data types the moment they're assigned, not somewhere deep in production.
+- Loose coupling
+- Easier upgrades
+- Simplified debugging
+- Plug-and-play agent replacement
 
-**Real data** — web search is real (NewsAPI), financial data is real (Yahoo Finance), AI inference is real (Groq). Nothing is mocked.
+---
+
+### Token Budget Enforcement
+
+The orchestrator tracks token consumption across agents and can skip lower-priority agents when limits are reached.
+
+Benefits:
+
+- Prevents excessive inference cost
+- Maintains predictable execution
+
+---
+
+### Fault Tolerance
+
+Every agent executes independently inside exception handling.
+
+Benefits:
+
+- Single-agent failure does not terminate the pipeline
+- Partial reports remain available
+
+---
+
+### Typed State Validation
+
+`Pydantic v2` with `validate_assignment=True` validates state during assignment.
+
+Benefits:
+
+- Early error detection
+- Reduced runtime failures
+
+---
+
+### Real Data Sources
+
+All external information comes from live services:
+
+- NewsAPI
+- Yahoo Finance
+- Groq LLM inference
+
+No mock data is used.
+
+---
 
 ## Validation Results
 
-| Company | Overall Risk | Result |
-|---|---|---|
-| Apple (AAPL) | 5.75/10 | Medium risk |
-| SVB (SIVBQ) | 8.0/10 | High risk (collapsed 2023) |
-| Beyond Meat (BYND) | 7.0/10 | High risk (struggling) |
-| Tesla (TSLA) | 7.5/10 | Medium-high risk|
+| Company | Overall Risk | Classification |
+|---|---:|---|
+| Apple (AAPL) | 5.75/10 | Medium |
+| SVB (SIVBQ) | 8.00/10 | High |
+| Beyond Meat (BYND) | 7.00/10 | High |
+| Tesla (TSLA) | 7.50/10 | Medium–High |
+
+---
 
 ## Roadmap
 
-- [ ] Phase 6 — Evaluation pipeline + meta agent
-- [ ] Phase 7 — MCP + A2A protocol integration
+- [ ] Evaluation pipeline + meta-agent
+- [ ] MCP + A2A protocol integration
 - [ ] Docker deployment
 - [ ] Frontend dashboard
-- [ ] ChromaDB long term memory
-- [ ] Streaming synthesis
+- [ ] Streaming synthesis improvements
+
+---
 
 ## Known Limitations
 
-- Token tracking is approximate (not exact Groq token counts)
-- NewsAPI free tier limited to 100 requests/day
-- LLM-as-judge evaluation introduces self-bias
-- No authentication on API endpoints (development only)
+- Token tracking uses estimates rather than exact provider counts
+- NewsAPI free tier restrictions apply
+- LLM-based evaluation can introduce model bias
+- Authentication not yet implemented
+
+---
 
 ## Production Safety Backlog
 
 - [ ] Input sanitization
-- [ ] Rate limiting on all endpoints
-- [ ] API key authentication
-- [ ] SOC 2 compliant data handling
+- [ ] API rate limiting
+- [ ] Authentication and API keys
 - [ ] Secrets rotation strategy
+- [ ] Compliance and secure data handling
