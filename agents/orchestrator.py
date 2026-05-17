@@ -39,7 +39,7 @@ async def run(ticker:str,company_name:str,max_tokens:int=50000,websocket=None)->
     budget = TokenBudget(max_tokens=max_tokens)
     msg = f"[orchestrator] started — {company_name} ({ticker}), budget: {max_tokens} tokens"
     context.audit_log.append(msg)
-    send_update(websocket,msg)
+    await send_update(websocket,msg)
 
     for agent_name , agent_run in AGENT_PIPELINE:
         estimated = AGENT_TOKEN_ESTIMATES.get(agent_name) or 2000
