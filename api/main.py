@@ -2,6 +2,7 @@ from fastapi import FastAPI,WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from agents.orchestrator import run as orchestrator_run
+from api.websocket import websocket_endpoint
 
 app = FastAPI(
     title="Finance Risk Analyzer",
@@ -48,3 +49,7 @@ async def analyze(request: AnalyzeRequest):
         "tokens_used": context.tokens_used,
         "audit_log": context.audit_log,
     }
+
+@app.websocket("/analyze/stream")
+async def stream_analyze(websocket: WebSocket):
+    await websocket_endpoint(websocket)

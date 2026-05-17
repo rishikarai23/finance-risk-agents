@@ -25,35 +25,56 @@ AGENT_TOKEN_ESTIMATES = {
     "report_agent": 2000,
 }
 
-async def run(ticker:str,company_name:str,max_tokens:int=50000)->FinancialContext:
+async def send_update(websocket, message: str):
+    """Sends a message through WebSocket if connected."""
+    if websocket:
+        await websocket.send_json({"update": message})
+
+        
+async def run(ticker:str,company_name:str,max_tokens:int=50000,websocket=None)->FinancialContext:
     context = FinancialContext(
         ticker=ticker,
         company_name=company_name
     )
     budget = TokenBudget(max_tokens=max_tokens)
-    context.audit_log.append(
-        f"[orchestrator] started — {company_name} ({ticker}), budget: {max_tokens} tokens"
-    )
+    msg = f"[orchestrator] started — {company_name} ({ticker}), budget: {max_tokens} tokens"
+    context.audit_log.append(msg)
+    send_update(websocket,msg)
+
     for agent_name , agent_run in AGENT_PIPELINE:
         estimated = AGENT_TOKEN_ESTIMATES.get(agent_name) or 2000
         if not budget.can_proceed(estimated):
-            context.audit_log.append(f"[orchestrator] skipping {agent_name} — budget exhausted")
+            msg = f"[orchestrator] skipping {agent_name} — budget exhausted"
+            context.audit_log.append(msg)
+            await send_update(websocket,msg)
             continue
-        context.audit_log.append(
-            f"[orchestrator] running {agent_name}"
-        )
+
+        msg = f"[orchestrator] running {agent_name}"
+        context.audit_log.append(msg)
+        await send_update(websocket,msg)
         try:
             context = await agent_run(context)
             budget.consume(agent_name, estimated)
+
         except Exception as e:
-            context.audit_log.append(
-                f"[orchestrator] {agent_name} failed — {str(e)}"
-            )
+            msg = f"[orchestrator] {agent_name} failed — {str(e)}"
+            context.audit_log.append(msg)
+            await send_update(websocket,msg)
             continue
     
-    context.audit_log.append(
-        f"[orchestrator] completed — {budget.summary()['used_tokens']} tokens used"
-    )
-    
+    msg = f"[orchestrator] completed — {budget.summary()['used_tokens']} tokens used"
+    context.audit_log.append(msg)
+    await send_update(websocket,msg)
+
+    if websocket:
+        await websocket.send_json({
+            "complete": True,
+            "overall_risk": context.overall_risk,
+            "sentiment_score": context.sentiment_score,
+            "contradictions": context.contradictions,
+            "final_memo": context.final_memo,
+            "tokens_used": context.tokens_used,
+        })
+        
     return context
 
