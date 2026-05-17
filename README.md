@@ -7,21 +7,30 @@ A production-grade multi-agent AI system that performs automated financial risk 
 Give it a company ticker and name. Seven specialized agents research it from different angles, cross-check each other's findings, detect contradictions, and produce a structured risk memo,the kind a financial analyst would write manually.
 
 ## Architecture
+This system uses a **blackboard architecture** where all agents communicate only through a shared typed state object (`FinancialContext`) built with **Pydantic v2**. Agents never communicate directly with each other.
 
-All agents communicate through a typed `FinancialContext` state object (Pydantic v2). No agent talks directly to another. This is called a **blackboard architecture**.
+The shared context acts as a central memory layer where agents read existing information and write updates back into the system.
+
+### Workflow
+
+```text
 User Request
-↓
-Master Orchestrator (token budget, routing, fault tolerance)
-↓
+      ↓
+Master Orchestrator
+(token budget, routing, fault tolerance)
+      ↓
+
 ┌─────────────────────────────────────────┐
-│  News Agent       → real NewsAPI search  │
-│  Financial Agent  → Yahoo Finance data   │
-│  Risk Scorer      → 4 dimensional scores │
-│  Contradiction    → cross-agent checks   │
-│  Sentiment Agent  → tone analysis        │
-│  Report Agent     → structured memo      │
+│ News Agent       → Real NewsAPI search │
+│ Financial Agent  → Yahoo Finance data  │
+│ Risk Scorer      → 4D risk analysis    │
+│ Contradiction    → Cross-agent checks  │
+│ Sentiment Agent  → Tone analysis       │
+│ Report Agent     → Structured memo     │
 └─────────────────────────────────────────┘
-↓
+
+      ↓
+
 Risk Memo + Audit Trail
 
 ## Agent Temperature Map
