@@ -55,7 +55,12 @@
 #### 1. <i>In context memory<i>:The conversation history is inside the context window.This memory gets deleted when the program stops running.Has a limited length and temporary
 #### 2. <i>External Memory<i>:The long term history which is stored in the vectordb.This survives restart and is semantically searchable
 #### 3. <i>Procedural Memory<i>: the agent's skills and rules, baked into its identity. Can't be updated at runtime. Used for: agent roles, output formats, behavioral constraints.System prompt files
-#### 4. <i> Episodic Memory<i>: a database of what happened: which agent said what, in which round, with what confidence score. Used for: audit trail, building the final report, evaluating agent quality over time.
+#### 4. <i> Episodic Memory<i>: a database of what happened: which agent said what, in which round, with what confidence score. Used for: audit trail, building the final report, evaluating agent quality over time
+
+### Finance Concepts
+#### 1. <strong>PE Ratio(Price to Earnings Ratio)</strong>: For every dollar a company makes how much are investors paying for it.
+P/E = Stock Price / Earnings Per Share                                                                     For Example : $211 / $5.81 = 36.34  
+So this essentialy means for every $1 apple earns investors are ready to pay 36.34 dollars for it.
 
 
 

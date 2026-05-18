@@ -4,7 +4,6 @@ import json
 import datetime
 from dotenv import load_dotenv
 from core.context import FinancialContext
-from core.budget import TokenBudget
 from core.prompts import NEWS_AGENT_PROMPT
 from groq import Groq
 
@@ -14,7 +13,6 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 async def search_news(company_name : str,ticker : str) -> list[str]:
-    current_year = datetime.datetime.now().year
     news_api_key = os.getenv("NEWS_API_KEY")
     url = "https://newsapi.org/v2/everything"
     params = {

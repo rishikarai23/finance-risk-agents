@@ -1,0 +1,351 @@
+{
+  "timestamp": "2026-05-18T15:26:36.504941",
+  "total": 10,
+  "passed": 10,
+  "failed": 0,
+  "pass_rate": 100.0,
+  "by_category": {
+    "ambiguous": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 100.0
+    },
+    "adversarial": {
+      "passed": 5,
+      "total": 5,
+      "pass_rate": 100.0
+    }
+  },
+  "results": [
+    {
+      "id": "ambiguous_001",
+      "ticker": "TSLA",
+      "company_name": "Tesla",
+      "category": "ambiguous",
+      "passed": true,
+      "score": 3,
+      "max_score": 4,
+      "grade": "3/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "5 - 9",
+          "actual risk": 6.5
+        },
+        "memo_produced": {
+          "passed": true,
+          "excepted": true,
+          "actual": true
+        },
+        "contradictions_found": {
+          "passed": false,
+          "expected": false,
+          "actual": 0
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 24
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "ambiguous_002",
+      "ticker": "BYND",
+      "company_name": "Beyond Meat",
+      "category": "ambiguous",
+      "passed": true,
+      "score": 4,
+      "max_score": 4,
+      "grade": "4/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "6 - 10",
+          "actual risk": 7.0
+        },
+        "memo_produced": {
+          "passed": true,
+          "excepted": true,
+          "actual": true
+        },
+        "contradictions_found": {
+          "passed": true,
+          "expected": false,
+          "actual": 3
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 23
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "ambiguous_003",
+      "ticker": "UBER",
+      "company_name": "Uber",
+      "category": "ambiguous",
+      "passed": true,
+      "score": 4,
+      "max_score": 4,
+      "grade": "4/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "4 - 8",
+          "actual risk": 7.0
+        },
+        "memo_produced": {
+          "passed": true,
+          "excepted": true,
+          "actual": true
+        },
+        "contradictions_found": {
+          "passed": true,
+          "expected": false,
+          "actual": 3
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 23
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "ambiguous_004",
+      "ticker": "SNAP",
+      "company_name": "Snapchat",
+      "category": "ambiguous",
+      "passed": true,
+      "score": 4,
+      "max_score": 4,
+      "grade": "4/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "6 - 10",
+          "actual risk": 7.5
+        },
+        "memo_produced": {
+          "passed": true,
+          "excepted": true,
+          "actual": true
+        },
+        "contradictions_found": {
+          "passed": true,
+          "expected": false,
+          "actual": 5
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 25
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "ambiguous_005",
+      "ticker": "COIN",
+      "company_name": "Coinbase",
+      "category": "ambiguous",
+      "passed": true,
+      "score": 4,
+      "max_score": 4,
+      "grade": "4/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "5 - 9",
+          "actual risk": 8.0
+        },
+        "memo_produced": {
+          "passed": true,
+          "excepted": true,
+          "actual": true
+        },
+        "contradictions_found": {
+          "passed": true,
+          "expected": false,
+          "actual": 4
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 24
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "adversarial_001",
+      "ticker": "FAKEXYZ",
+      "company_name": "Fake Company",
+      "category": "adversarial",
+      "passed": true,
+      "score": 4,
+      "max_score": 4,
+      "grade": "4/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "7 - 10",
+          "actual risk": 7.0
+        },
+        "memo_produced": {
+          "passed": true,
+          "excepted": true,
+          "actual": true
+        },
+        "contradictions_found": {
+          "passed": true,
+          "expected": false,
+          "actual": 5
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 21
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "adversarial_002",
+      "ticker": "SIVBQ",
+      "company_name": "Silicon Valley Bank",
+      "category": "adversarial",
+      "passed": true,
+      "score": 3,
+      "max_score": 4,
+      "grade": "3/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "7 - 10",
+          "actual risk": 7.0
+        },
+        "memo_produced": {
+          "passed": true,
+          "excepted": true,
+          "actual": true
+        },
+        "contradictions_found": {
+          "passed": false,
+          "expected": false,
+          "actual": 0
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 21
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "adversarial_003",
+      "ticker": "ENRNQ",
+      "company_name": "Enron",
+      "category": "adversarial",
+      "passed": true,
+      "score": 4,
+      "max_score": 4,
+      "grade": "4/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "7 - 10",
+          "actual risk": 7.0
+        },
+        "memo_produced": {
+          "passed": true,
+          "excepted": true,
+          "actual": true
+        },
+        "contradictions_found": {
+          "passed": true,
+          "expected": false,
+          "actual": 4
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 21
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "adversarial_004",
+      "ticker": "",
+      "company_name": "",
+      "category": "adversarial",
+      "passed": true,
+      "score": 3,
+      "max_score": 4,
+      "grade": "3/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "0 - 10",
+          "actual risk": 7.0
+        },
+        "memo_produced": {
+          "passed": false,
+          "excepted": false,
+          "actual": true
+        },
+        "expect_error": {
+          "passed": true,
+          "expected": "skipped for error cases",
+          "actual": "skipped"
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 20
+        }
+      },
+      "error": null
+    },
+    {
+      "id": "adversarial_005",
+      "ticker": "AAPL!!!",
+      "company_name": "Apple Invalid",
+      "category": "adversarial",
+      "passed": true,
+      "score": 3,
+      "max_score": 4,
+      "grade": "3/4",
+      "checks": {
+        "risk_in_range": {
+          "passed": true,
+          "expected range": "0 - 10",
+          "actual risk": 7.0
+        },
+        "memo_produced": {
+          "passed": false,
+          "excepted": false,
+          "actual": true
+        },
+        "expect_error": {
+          "passed": true,
+          "expected": "skipped for error cases",
+          "actual": "skipped"
+        },
+        "audit_log_presence": {
+          "passed": true,
+          "expected": true,
+          "actual": 21
+        }
+      },
+      "error": null
+    }
+  ]
+}

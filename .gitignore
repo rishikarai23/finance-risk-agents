@@ -5,4 +5,5 @@ core/__pycache__
 agents/__pycache__
 api/__pycache__
 core/__pycache__
+eval/__pycache__
 test_news_search.py
