@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Risk Assessment</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #0f1117;
+            color: #e0e0e0;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .input-section {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        input {
+            background: #0f1117;
+            border: 1px solid #2a2d3a;
+            border-radius: 8px;
+            padding: 12px 16px;
+            color: #e0e0e0;
+            font-size: 15px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #4f8ef7;
+        }
+
+        input::placeholder {
+            color: #555;
+        }
+
+        button {
+            background: #4f8ef7;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover { background: #3a7ae0; }
+        button:disabled { background: #333; cursor: not-allowed; }
+
+        .live-feed {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .live-feed h2 {
+            font-size: 14px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .feed-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #2a2d3a;
+            font-size: 13px;
+            color: #aaa;
+            font-family: monospace;
+        }
+
+        .feed-item:last-child { border-bottom: none; }
+        .feed-item.success { color: #4fd1a8; }
+        .feed-item.running { color: #4f8ef7; }
+
+        .results {
+            display: none;
+        }
+
+        .scoresGrid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+        .scoresCard {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+        .scoresCard .label {
+            font-size: 20px;
+            color:#888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .scoresCard .value {
+            margin-top: 4px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+        .sublabel {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        .risk-low { color: #4fd1a8; }
+        .risk-medium { color: #f7a84f; }
+        .risk-high { color: #f87171; }
+        .section {
+            background: #1a1d27;
+            border: 1px solid #2a2d3a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .section h2 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        .contradiction {
+            background: #2a1a1a;
+            border-left: 3px solid #f87171;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #ccc;
+            line-height: 1.5;
+        }
+
+        .memo {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #ccc;
+            white-space: pre-wrap;
+        }
+
+        .memo h1, .memo h2, .memo h3 {
+            color: #fff;
+            margin: 16px 0 8px 0;
+        }
+
+        .memo p {
+            margin-bottom: 12px;
+            color: #ccc;
+        }
+
+        .memo strong {
+            color: #fff;
+        }
+        
+        .memo ul, .memo ol {
+            padding-left: 20px;
+            margin-bottom: 12px;
+            color: #ccc;
+        }
+
+        .audit-entry {
+            font-size: 12px;
+            font-family: monospace;
+            color: #666;
+            padding: 4px 0;
+            border-bottom: 1px solid #1a1d27;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #333;
+            border-top-color: #4f8ef7;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Finance Risk Assessment</h1>
+        <p class="subtitle">Multi-agent AI for financial Risk Analysis</p>
+        <div class="input-section">
+            <input type="text" id="ticker" placeholder="Ticker (eg AAPL)"/>
+            <input type="text" id="company_name" placeholder="Company Name (eg Apple Inc)"/>
+            <button id="analyzeBtn" onclick="analyze()">Analyze</button>
+        </div>
+        <div class="live-feed" id="liveFeed">
+            <h3>Live Agent Updates</h3>
+            <div id="feedItems"></div>
+        </div>
+        <div class="results" id="results">
+            <div class="scoresGrid">
+                <div class="scoresCard">
+                    <div class="label">Overall Risk</div>
+                    <div class="value" id="overallRisk">-</div>
+                    <div class="sublabel">Out of 10</div>
+                </div>
+
+                <div class="scoresCard">
+                    <div class="label">Sentiment</div>
+                    <div class="value" id="sentiment">-</div>
+                    <div class="sublabel">-1 to 1</div>
+                </div>
+
+                <div class="scoresCard">
+                    <div class="label">Contradictions</div>
+                    <div class="value" id="contradictionCount">-</div>
+                    <div class="sublabel">found</div>
+                </div>
+            </div>
+            <div class="section">
+                <h2>Contradictions & Red Flags</h2>
+                <div id="contradictionsList"></div>
+            </div>
+
+            <div class="section">
+                <h2>Risk Memo</h2>
+                <div id="finalMemo"></div>
+            </div>
+
+            <div class="section">
+                <h2>Audit Log</h2>
+                <div id="auditLog"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        let ws=null
+        function getRiskClass(score){
+            if (score<=3) return "risk-low";
+            if (score<=6) return "risk-medium";
+            else return "risk-high";
+        }
+        function addFeedItem(message,type=''){
+            const feed = document.getElementById('feedItems');
+            const item = document.createElement('div');
+            item.className = `feed-item ${type}`;
+            item.textContent = message;
+            feed.appendChild(item);
+            feed.scrollTop = feed.scrollHeight;
+        }
+        function analyze(){
+            const ticker = document.getElementById('ticker').value.trim();
+            const company_name = document.getElementById('company_name').value.trim();
+            if (!ticker||!company_name) {
+                alert('Please enter both ticker and company name');
+                return;
+            }
+            document.getElementById('feedItems').innerHTML = ' ';
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('liveFeed').style.display = 'block';
+            document.getElementById('analyzeBtn').disabled = true;
+            document.getElementById('analyzeBtn').innerHTML = '<span class="spinner"></span>Analyzing...';
+
+            ws = new WebSocket('ws://localhost:8000/analyze/stream')
+
+            ws.onopen = () => {
+                addFeedItem('Connected — starting analysis...', 'running')
+                ws.send(JSON.stringify({
+                    ticker: ticker,
+                    company_name: company_name
+                }));
+            };
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data)
+                if (data.update) {
+                    const type = data.update.includes('complete')?'success' : 'running';
+                    addFeedItem(data.update,type);
+                }
+                if (data.complete) {
+                    addFeedItem("Analysis Complete",'success')
+                    showResults(data)
+                    document.getElementById('analyzeBtn').disabled = false;
+                    document.getElementById('analyzeBtn').textContent = 'Analyze';
+                }
+                if (data.error) {
+                    addFeedItem(`Error: ${data.error}`, '');
+                    document.getElementById('analyzeBtn').disabled = false;
+                    document.getElementById('analyzeBtn').textContent = 'Analyze';
+                }
+            }
+            ws.onerror = () => {
+                addFeedItem('❌ Connection error — is the server running?', '');
+                document.getElementById('analyzeBtn').disabled = false;
+                document.getElementById('analyzeBtn').textContent = 'Analyze';
+            };
+        }
+        function showResults(data){
+            document.getElementById('results').style.display = 'block';
+            const risk = document.getElementById('overallRisk');
+            risk.textContent = data.overall_risk || '-';
+            risk.className = `value ${getRiskClass(data.overall_risk)}`;
+
+            const sentEl = document.getElementById('sentiment');
+            sentEl.textContent = data.sentiment_score || '-';
+            sentEl.className = `value ${data.sentiment_score < 0 ? 'risk-high' : 'risk-low'}`
+
+            document.getElementById('contradictionCount').textContent = data.contradictions ? data.contradictions.length : 0;
+            
+            const contList = document.getElementById('contradictionsList');
+            contList.innerHTML = '';
+            if ( data.contradictions && data.contradictions.length > 0){
+                data.contradictions.forEach(c => {
+                    const cont = document.createElement('div');
+                    cont.className = 'contradiction';
+                    cont.textContent = c;
+                    contList.appendChild(cont)
+                });
+            } else {
+                contList.innerHTML = '<p style="color:#666;font-size:13px">No contradictions detected</p>';
+            }
+
+            document.getElementById('finalMemo').innerHTML = marked.parse(data.final_memo || '')
+
+            const auditEl = document.getElementById('auditLog');
+            auditEl.innerHTML = ''
+            if(data.audit_log){
+                data.audit_log.forEach(entry => {
+                    const div = document.createElement('div');
+                    div.className = 'audit-entry';
+                    div.textContent = entry;
+                    auditEl.appendChild(div);
+                })
+            }
+
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+        }  
+    </script>
+</body>
+</html>

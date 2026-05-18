@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from agents.orchestrator import run as orchestrator_run
 from api.websocket import websocket_endpoint
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 app = FastAPI(
     title="Finance Risk Analyzer",
@@ -53,3 +55,7 @@ async def analyze(request: AnalyzeRequest):
 @app.websocket("/analyze/stream")
 async def stream_analyze(websocket: WebSocket):
     await websocket_endpoint(websocket)
+
+@app.get('/dashboard')
+async def dashborad():
+    return FileResponse("api/dashboard.html")
