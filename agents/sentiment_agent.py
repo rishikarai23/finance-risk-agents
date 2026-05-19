@@ -44,7 +44,6 @@ def get_sentiment(raw_input:dict,company_name:str)->list:
         end = clean.rindex("}") + 1
         clean = clean[start:end]
     clean = clean.strip()
-    print("RAW SENTIMENT RESPONSE:", clean[:500])
     try:
         parsed = json.loads(clean)
         parsed["tokens_used"] = response.usage.total_tokens
