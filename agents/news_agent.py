@@ -67,13 +67,16 @@ def summarize_news(raw_results: list[str], company_name: str) -> dict:
     clean = clean.strip()
 
     try:
-        return json.loads(clean)
+        parsed = json.loads(clean)
+        parsed['tokens_used'] = response.usage.total_tokens
+        return parsed
     except json.JSONDecodeError:
         # If Groq doesn't return valid JSON, return a safe default
         return {
             "news_articles": raw_results,
             "news_summary": raw,
-            "risk_signals": []
+            "risk_signals": [],
+            "tokens_used" : response.usage.total_tokens
         }
 
 async def run(context: FinancialContext) -> FinancialContext:
@@ -104,7 +107,7 @@ async def run(context: FinancialContext) -> FinancialContext:
     )
 
     # Step 5 — token tracking
-    context.tokens_used += 1500
+    context.tokens_used += structured["tokens_used"] or 0
 
     return context
 

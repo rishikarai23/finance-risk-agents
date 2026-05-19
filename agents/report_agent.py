@@ -34,7 +34,7 @@ def prepare_report_input(context: FinancialContext) -> dict:
     }
 
 
-def generate_report(input_data: dict, company_name: str) -> str:
+def generate_report(input_data: dict, company_name: str) -> dict:
     """Sends everything to Groq, gets back a structured risk memo."""
     input_text = "\n".join([
         f"{key}: {value}"
@@ -54,8 +54,10 @@ def generate_report(input_data: dict, company_name: str) -> str:
         max_tokens=2000,
     )
 
-    return response.choices[0].message.content
-
+    return {
+        "report" : response.choices[0].message.content,
+        "tokens_used" : response.usage.total_tokens
+    }
 
 async def run(context: FinancialContext) -> FinancialContext:
     """Main agent function — orchestrator calls this."""
@@ -65,11 +67,12 @@ async def run(context: FinancialContext) -> FinancialContext:
     )
 
     input_data = prepare_report_input(context)
-    context.final_memo = generate_report(input_data, context.company_name)
+    output_dict = generate_report(input_data, context.company_name)
+    context.final_memo = output_dict["report"]
 
     context.audit_log.append(
         f"[report_agent] completed — memo generated, {len(context.final_memo)} characters"
     )
-    context.tokens_used += 2000
+    context.tokens_used += output_dict["tokens_used"]
 
     return context

@@ -62,6 +62,7 @@ def get_contradictions(data_text: dict,company_name: str) -> dict:
     except json.JSONDecodeError:
         return {
             "contradictions": [],
+            "tokens": response.usage.total_tokens
         }
     
 async def run(context:FinancialContext) -> FinancialContext:
@@ -80,5 +81,5 @@ async def run(context:FinancialContext) -> FinancialContext:
     context.audit_log.append(
             f"[contradiction agent] ended : there were {len(context.contradictions)}"
     )
-    context.tokens_used += 1500
+    context.tokens_used += groq_output.get("tokens_used", 0)
     return context

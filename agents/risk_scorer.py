@@ -51,7 +51,9 @@ def score_risk(risk_input: dict,company_name: str) -> dict:
         clean = clean[start:end]
     clean = clean.strip()
     try:
-        return json.loads(clean)
+        parsed = json.loads(clean)
+        parsed["tokens_used"] = response.usage.total_tokens
+        return parsed
     except json.JSONDecodeError:
         return {
             "liquidity_risk": 5.0,
@@ -59,7 +61,8 @@ def score_risk(risk_input: dict,company_name: str) -> dict:
             "concentration_risk": 5.0,
             "market_risk": 5.0,
             "overall_risk": 5.0,
-            "reasoning": raw
+            "reasoning": raw,
+            "tokens_used": response.usage.total_tokens
         }
     
 async def run(context:FinancialContext)->FinancialContext:
@@ -83,5 +86,5 @@ async def run(context:FinancialContext)->FinancialContext:
         f"[risk_scorer_agent] completed - overall risk: {context.overall_risk}/10"
     )
 
-    context.tokens_used += 1500
+    context.tokens_used += final_data["tokens_used"]
     return context

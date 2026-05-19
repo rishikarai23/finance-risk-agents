@@ -44,11 +44,16 @@ def get_sentiment(raw_input:dict,company_name:str)->list:
         end = clean.rindex("}") + 1
         clean = clean[start:end]
     clean = clean.strip()
+    print("RAW SENTIMENT RESPONSE:", clean[:500])
     try:
-        return json.loads(clean)
+        parsed = json.loads(clean)
+        parsed["tokens_used"] = response.usage.total_tokens
+        return parsed
     except json.JSONDecodeError:
         return {
-            "contradictions": [],
+            "sentiment_score": 0.0,
+            "signals": [],
+            "tokens_used": response.usage.total_tokens
         }
     
 async def run(context:FinancialContext)->FinancialContext:
@@ -58,11 +63,15 @@ async def run(context:FinancialContext)->FinancialContext:
     )
     raw_data = prepare_input(context)
     sentiment = get_sentiment(raw_data,context.company_name)
-    context.sentiment_score = sentiment.get("sentiment_score")
+    score = sentiment.get("sentiment_score")
+    try:
+        context.sentiment_score = float(score) if score is not None else 0.0
+    except (ValueError, TypeError):
+        context.sentiment_score = 0.0
     context.sentiment_signals = sentiment.get("signals") or []
     context.audit_log.append(
         f"[sentiment_agent] ended - for the company the sentiment score is {context.sentiment_score} and the number of sentiment signals are {len(context.sentiment_signals)}"
     )
-    context.tokens_used += 2000
+    context.tokens_used += sentiment["tokens_used"]
     return context
 

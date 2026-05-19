@@ -70,12 +70,15 @@ def analyze_financial_data(data : dict,company_name : str) -> dict:
         clean = clean[start:end]
     clean = clean.strip()
     try:
-        return json.loads(clean)
+        parsed = json.loads(clean)
+        parsed["tokens_used"] = response.usage.total_tokens
+        return parsed
     except json.JSONDecodeError:
         return {
             "analysis": raw,
             "flags": [],
-            "data_quality_note": "Could not parse structured response"
+            "data_quality_note": "Could not parse structured response",
+            "tokens_used": response.usage.total_tokens
         }
     
 async def run(context: FinancialContext) -> FinancialContext:
@@ -107,7 +110,7 @@ async def run(context: FinancialContext) -> FinancialContext:
     if flags:
         for flag in flags:
             context.audit_log.append(f"[financial_agent] flag: {flag}")
-    context.tokens_used += 1000
+    context.tokens_used += analysis.get('tokens_used') or 0
     return context
     
 

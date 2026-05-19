@@ -5,7 +5,7 @@ import json
 from core.context import FinancialContext
 from core.budget import TokenBudget
 
-load_dotenv
+load_dotenv()
 
 AGENT_PIPELINE = [
     ("news_agent",news_agent.run),
@@ -53,8 +53,10 @@ async def run(ticker:str,company_name:str,max_tokens:int=50000,websocket=None)->
         context.audit_log.append(msg)
         await send_update(websocket,msg)
         try:
+            tokens_before = context.tokens_used
             context = await agent_run(context)
-            budget.consume(agent_name, estimated)
+            tokens_spent = context.tokens_used - tokens_before
+            budget.consume(agent_name, tokens_spent)
 
         except Exception as e:
             msg = f"[orchestrator] {agent_name} failed — {str(e)}"
