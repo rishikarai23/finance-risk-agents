@@ -19,7 +19,7 @@ async def search_news(company_name : str,ticker : str) -> list[str]:
         "q": f"{company_name} {ticker} stock earnings revenue financial results",
         "language": "en",
         "sortBy": "publishedAt",
-        "pageSize": 8,
+        "pageSize": 10,
         "apiKey": news_api_key,
     }
     async with httpx.AsyncClient() as client_http:
@@ -99,14 +99,12 @@ async def run(context: FinancialContext) -> FinancialContext:
     ]
     context.news_summary = structured.get("news_summary", "")
 
-    # Step 4 — update audit log
     risk_signals = structured.get("risk_signals", [])
     context.audit_log.append(
         f"[news_agent] completed — {len(context.news_articles)} relevant articles, "
         f"{len(risk_signals)} risk signals found"
     )
 
-    # Step 5 — token tracking
     context.tokens_used += structured["tokens_used"] or 0
 
     return context
