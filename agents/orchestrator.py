@@ -48,7 +48,7 @@ async def run(ticker:str,company_name:str,max_tokens:int=50000,websocket=None)->
                 f"Previous analysis ({meta['date'][:10]}): "
                 f"risk={meta['overall_risk']}, "
                 f"sentiment={meta['sentiment_score']}, "
-                f"contradictions={meta['contradiction_count']}"
+                f"contradictions={meta['contradictions_count']}"
             )
         context.audit_log.append(
         f"[orchestrator] found {len(previous)} previous analyses for {ticker}"
