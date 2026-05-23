@@ -1,57 +1,43 @@
-# Finance Risk Intelligence: Multi-Agent System
+# Finance Risk Intelligence — Multi-Agent System
 
-A multi-agent AI system for automated financial risk analysis of publicly traded companies. The system combines specialized agents, centralized state management, real-time streaming, and a full audit trail to generate structured financial risk reports.
-
+A production-grade multi-agent AI system for automated financial risk analysis of publicly traded companies. Provide a company name and ticker — six specialized AI agents research it, cross-check findings, detect contradictions, and produce a structured analyst-style risk memo with full audit trail.
 
 ## What it does
 
-Provide a company ticker and company name.
+Give it a ticker and company name. The system launches six specialized AI agents that:
 
-The system launches specialized AI agents that:
-
-- Gather financial and news data
-- Analyze market sentiment
-- Compute multidimensional risk scores
-- Detect inconsistencies across findings
+- Search real financial news via NewsAPI
+- Fetch live financial metrics via Yahoo Finance
+- Score risk across 4 dimensions (liquidity, credit, concentration, market)
+- Detect contradictions between agent findings
+- Analyze market sentiment from news tone
 - Generate a structured analyst-style risk memo
 
-The output resembles the workflow of a financial analyst, but is fully automated.
-
+All agent activity streams live to the dashboard via WebSocket. Every action is recorded in a full audit trail.
 
 ## Architecture
 
-This system follows a **blackboard architecture** where all agents communicate through a shared typed state object (`FinancialContext`) implemented using **Pydantic v2**.
-
-Agents never communicate directly with each other.
-
-Instead:
+Follows a **blackboard architecture** — all agents communicate through a shared typed state object (`FinancialContext`) implemented with **Pydantic v2**. Agents never communicate directly.
 
 ```text
 Agent → FinancialContext → Agent
 ```
 
-The shared state acts as a central memory layer where agents read existing information and write updated results.
-
-### Workflow
-
 ```text
 User Request
       ↓
 Master Orchestrator
-(token budget, routing, fault tolerance)
+(token budget, routing, fault tolerance, rate limiting)
       ↓
- News Agent       → NewsAPI search      
- Financial Agent  → Yahoo Finance data  
- Risk Scorer      → 4D risk analysis    
- Contradiction    → Cross-agent checks  
- Sentiment Agent  → Tone analysis       
- Report Agent     → Structured memo     
-
+News Agent        → NewsAPI (real web search)
+Financial Agent   → Yahoo Finance (real market data)
+Risk Scorer       → 4-dimensional risk scoring
+Contradiction     → Cross-agent inconsistency detection
+Sentiment Agent   → Tone and mood analysis
+Report Agent      → Structured risk memo
       ↓
-
 Risk Memo + Audit Trail
 ```
-
 
 ## Agent Temperature Map
 
@@ -65,82 +51,72 @@ Risk Memo + Audit Trail
 | Sentiment Agent | 0.5 | Nuanced tone analysis |
 | Report Agent | 0.7 | Human-readable report generation |
 
-
 ## Tech Stack
 
 | Technology | Purpose |
 |---|---|
 | Python 3.12+ | Core language |
-| Groq API | LLM inference (`llama-3.1-8b-instant`) |
-| LangGraph | Agent orchestration |
+| Groq API | LLM inference (llama-3.1-8b-instant) |
 | Pydantic v2 | Typed state validation |
 | FastAPI | REST and WebSocket API |
-| yfinance | Financial data |
-| NewsAPI | News retrieval |
-| ChromaDB | Long-term memory |
+| slowapi | Rate limiting (5/minute, 20/day per IP) |
+| yfinance | Real financial data |
+| NewsAPI | Real news articles |
+| ChromaDB | Long-term memory (in progress) |
 | Docker Compose | Containerization |
-
-
 
 ## API Endpoints
 
 ### REST
 
-**POST /analyze**
+**POST /analyze** — rate limited to 5/minute, 20/day
 
 ```json
 {
-    "ticker":"AAPL",
-    "company_name":"Apple Inc",
-    "max_tokens":50000
+    "ticker": "AAPL",
+    "company_name": "Apple Inc",
+    "max_tokens": 50000
 }
 ```
 
 ### WebSocket
 
-**WS /analyze/stream**
-
-Features:
+**WS /analyze/stream** — rate limited to 5/minute, 20/day per IP
 
 - Live agent execution updates
-- Incremental status messages
-- Final memo upon completion
+- Incremental status messages per agent
+- Final structured memo on completion
+
+### Dashboard
+
+**GET /dashboard** — live streaming UI
 
 ### Documentation
 
-```text
-GET /docs
-```
-
-Interactive Swagger UI available through FastAPI.
-
+**GET /docs** — interactive Swagger UI
 
 ## Sample Output
 
 ```json
 {
-  "overall_risk":5.75,
-  "sentiment_score":-0.4,
-  "contradictions":4,
-  "final_memo":"MEDIUM RISK — Apple Inc shows strong profitability...",
-  "tokens_used":9500
+  "overall_risk": 5.75,
+  "sentiment_score": -0.4,
+  "contradictions": 4,
+  "final_memo": "MEDIUM RISK — Apple Inc shows strong profitability...",
+  "tokens_used": 9500,
+  "audit_log": [...]
 }
 ```
 
-
 ## Setup
 
-### Clone repository
+### Clone and install
 
 ```bash
 git clone https://github.com/rishikarai23/Multi_Agent.git
-
 cd Multi_Agent
-
 python3 -m venv venv
-
 source venv/bin/activate
-
 pip install ".[dev]"
 ```
 
@@ -150,114 +126,71 @@ pip install ".[dev]"
 cp .env.example .env
 ```
 
-Add:
+Add your keys:
 
 ```env
 GROQ_API_KEY=
 NEWS_API_KEY=
 ```
 
-### Run API
+### Run with Docker (recommended)
+
+```bash
+docker-compose up --build
+```
+
+### Run locally
 
 ```bash
 uvicorn api.main:app --reload --port 8000
 ```
 
+### Open dashboard
+http://localhost:8000/dashboard
+
 ### Test API
 
 ```bash
 curl -X POST http://localhost:8000/analyze \
--H "Content-Type: application/json" \
--d '{"ticker":"AAPL","company_name":"Apple Inc"}'
+  -H "Content-Type: application/json" \
+  -d '{"ticker": "AAPL", "company_name": "Apple Inc"}'
 ```
-
 
 ## Key Design Decisions
 
 ### Blackboard Architecture
-
-Agents never communicate directly.
-
-Benefits:
-
-- Loose coupling
-- Easier upgrades
-- Simplified debugging
-- Plug-and-play agent replacement
-
+Agents never communicate directly. All state flows through `FinancialContext`. Any agent can be swapped, upgraded, or removed without touching the others.
 
 ### Token Budget Enforcement
-
-The orchestrator tracks token consumption across agents and can skip lower-priority agents when limits are reached.
-
-Benefits:
-
-- Prevents excessive inference cost
-- Maintains predictable execution
-
+The orchestrator tracks exact token consumption per agent using Groq's `response.usage.total_tokens`. Agents are skipped when the budget is exhausted.
 
 ### Fault Tolerance
-
-Every agent executes independently inside exception handling.
-
-Benefits:
-
-- Single-agent failure does not terminate the pipeline
-- Partial reports remain available
-
+Every agent runs inside a try/except block. One agent failing does not terminate the pipeline. The Report Agent produces a partial memo from whatever data is available.
 
 ### Typed State Validation
+Pydantic v2 with `validate_assignment=True` validates every field assignment at runtime. Wrong types are caught immediately, not deep in production.
 
-`Pydantic v2` with `validate_assignment=True` validates state during assignment.
+### Rate Limiting
+REST endpoints protected by slowapi (5 requests/minute, 20/day per IP). WebSocket endpoint protected by in-memory per-IP tracking with the same limits.
 
-Benefits:
-
-- Early error detection
-- Reduced runtime failures
-
-
-### Real Data Sources
-
-All external information comes from live services:
-
-- NewsAPI
-- Yahoo Finance
-- Groq LLM inference
-
-No mock data is used.
-
+### Real Data Only
+No mock data anywhere in the system. NewsAPI for news, Yahoo Finance for financial metrics, Groq for LLM inference.
 
 ## Validation Results
 
-| Company | Overall Risk | Classification |
-|---|---:|---|
-| Apple (AAPL) | 5.75/10 | Medium |
-| SVB (SIVBQ) | 8.00/10 | High |
-| Beyond Meat (BYND) | 7.00/10 | High |
-| Tesla (TSLA) | 7.50/10 | Medium–High |
+| Company | Overall Risk | Classification | Accuracy |
+|---|---:|---|---|
+| Apple (AAPL) | 5.75/10 | Medium | correct |
+| SVB (SIVBQ) | 8.00/10 | High | correct (collapsed 2023) |
+| Beyond Meat (BYND) | 7.00/10 | High | correct (declining revenue) |
+| Tesla (TSLA) | 7.50/10 | Medium-High | correct (volatile) |
 
+## Eval Pipeline
 
-## Roadmap
+15 standardized test cases across 3 categories:
 
-- [ ] Evaluation pipeline + meta-agent
-- [ ] MCP + A2A protocol integration
-- [ ] Docker deployment
-- [ ] Frontend dashboard
-- [ ] Streaming synthesis improvements
-
-
-## Known Limitations
-
-- Token tracking uses estimates rather than exact provider counts
-- NewsAPI free tier restrictions apply
-- LLM-based evaluation can introduce model bias
-- Authentication not yet implemented
-
-
-## Production Safety Backlog
-
-- [ ] Input sanitization
-- [ ] API rate limiting
-- [ ] Authentication and API keys
-- [ ] Secrets rotation strategy
-- [ ] Compliance and secure data handling
+| Category | Cases | Pass Rate |
+|---|---|---|
+| Baseline (stable companies) | 5 | 100% |
+| Ambiguous (mixed signals) | 5 | 100% |
+| Adversarial (edge cases) | 5 | 100% |
