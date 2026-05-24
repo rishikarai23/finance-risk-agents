@@ -114,7 +114,7 @@ Risk Memo + Audit Trail
 
 ```bash
 git clone https://github.com/rishikarai23/Multi_Agent.git
-cd Multi_Agent
+cd finance-risk-agents
 python3 -m venv venv
 source venv/bin/activate
 pip install ".[dev]"
