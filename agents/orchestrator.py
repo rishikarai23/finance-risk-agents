@@ -41,10 +41,9 @@ async def run(ticker:str,company_name:str,max_tokens:int=50000,websocket=None)->
     memory = Financial_Memory()
     previous = memory.get_previous_analysis(ticker)
     if previous:
-        history_previous = []
         for p in previous:
             meta = p["metadata"]
-            history_previous.append(
+            context.historical_context.append(
                 f"Previous analysis ({meta['date'][:10]}): "
                 f"risk={meta['overall_risk']}, "
                 f"sentiment={meta['sentiment_score']}, "
@@ -52,9 +51,6 @@ async def run(ticker:str,company_name:str,max_tokens:int=50000,websocket=None)->
             )
         context.audit_log.append(
         f"[orchestrator] found {len(previous)} previous analyses for {ticker}"
-        )
-        context.audit_log.append(
-            f"[orchestrator] history: {' | '.join(history_previous)}"
         )
 
     msg = f"[orchestrator] started — {company_name} ({ticker}), budget: {max_tokens} tokens"

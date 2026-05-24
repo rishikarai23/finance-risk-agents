@@ -55,6 +55,8 @@ class FinancialContext(BaseModel):
     audit_log: list[str] = Field(default_factory=list)
     created_at: str = Field(default_factory=lambda: datetime.now().isoformat())
 
+    #chromadb previous data injection
+    historical_context: list[str] = Field(default_factory=list)
 
 
 

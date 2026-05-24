@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 from core.context import FinancialContext
 from core.prompts import REPORT_AGENT_PROMPT
 from groq import Groq
-
+from core.memory import Financial_Memory
 load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
@@ -31,6 +31,7 @@ def prepare_report_input(context: FinancialContext) -> dict:
         "sentiment_score": context.sentiment_score,
         "sentiment_signals": context.sentiment_signals,
         "tokens_used": context.tokens_used,
+        "historical_context":context.historical_context
     }
 
 

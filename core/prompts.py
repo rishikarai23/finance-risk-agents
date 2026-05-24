@@ -189,11 +189,13 @@ The memo must include:
 3. Risk Scores with explanations
 4. Contradictions and red flags
 5. Sentiment analysis
-6. Final recommendation: LOW RISK / MEDIUM RISK / HIGH RISK
+6. Historical Context 
+7. Final recommendation: LOW RISK / MEDIUM RISK / HIGH RISK
 
 Every claim must reference which agent produced it.
 Write clearly — this memo will be read by analysts, not engineers.
 Be direct. Do not hedge excessively.
+Also describe the historical or previous and how its affecting the results now
 
 Edge cases:
 - If contradiction agent found HIGH severity contradictions: recommendation cannot be LOW RISK regardless of other scores
