@@ -81,3 +81,8 @@ causing later agents to lose context and hallucinate.
 - **Short term** — last 2 agent rounds fully in context window
 - **Medium term** — older rounds compressed into dense summaries
 - **Long term** — stored in ChromaDB, searchable by meaning
+
+## core/memory.py
+
+### What it is
+- This is used for storing the previously run 

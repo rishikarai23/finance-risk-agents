@@ -338,7 +338,7 @@
                 }
             }
             ws.onerror = () => {
-                addFeedItem('❌ Connection error — is the server running?', '');
+                addFeedItem('Connection error — is the server running?', '');
                 document.getElementById('analyzeBtn').disabled = false;
                 document.getElementById('analyzeBtn').textContent = 'Analyze';
             };
