@@ -69,3 +69,7 @@ async def stream_analyze(websocket: WebSocket):
 @limiter.limit("60/minute")
 async def dashboard(request: Request):
     return FileResponse("api/dashboard.html")
+
+@app.get('/download_pdf')
+async def downloadpdf(request:Request):
+    return "hello i will become a pdf download function"
