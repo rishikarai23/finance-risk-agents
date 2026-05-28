@@ -8,6 +8,7 @@ from slowapi import Limiter,_rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from fastapi import Request
+from core.context import FinancialContext
 
 
 app = FastAPI(
@@ -71,5 +72,5 @@ async def dashboard(request: Request):
     return FileResponse("api/dashboard.html")
 
 @app.get('/download_pdf')
-async def downloadpdf(request:Request):
+async def downloadpdf(request: Request,context: FinancialContext):
     return "hello i will become a pdf download function"

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0"></script>
     <title>Document</title>
     <style>
         body {
@@ -67,27 +68,82 @@
             color: #8a85c4;
             font-weight: 100;
         }
+        .risk-low { color: green;}
+        .risk-medium { color: orange}
+        .risk-high { color: red}
+        .risk_analysis_div {
+            background-color: #040122;
+            border:1px solid #0c0cad;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 12px;
+            padding: 20px;
+        }
+        .risk_analysis_div .heading{
+            font-size: 20px;
+            font-weight: 200;
+            color: #bcbcd3;
+            text-transform: uppercase;
+        }
 
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Financial Risk Analysis</h1>
-        <p class="subtitle">This is the pdf report for {{ context.company_name }} </p>
+        <p class="subtitle">This is the pdf report for {{company_name }} and was created at {{created_at }}</p>
         <div class="scoregrid">
             <div class="scorescard">
                 <div class="label">Contradictions</div>
-                <div class="value" id="contradiction">9</div>
+                <div class="value" id="contradiction">-</div>
             </div>
             <div class="scorescard">
-                <div class="label">Risk Score</div>
-                <div class="value" id="riskscore">10</div>
+                <div class="label">Overall Risk Score</div>
+                <div class="value" id="riskscore">-</div>
             </div>
             <div class="scorescard">
                 <div class="label">Sentiment Score</div>
-                <div class="value" id="sentimentscore">11</div>
+                <div class="value" id="sentimentscore">-</div>
             </div>
         </div>
+        <div class="risk_analysis_div">
+            <div class="heading">Risk Analysis</div>
+            <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+        </div>
     </div>
+    <script>
+    const xvalues = ["liquidity_risk","credit_risk","concentration_risk","market_risk","overall_risk"]
+    const yvalues = [0.95,0.8,0.5,0.2,0.5]
+    const barcolors = []
+    for(let risk of yvalues){
+        if(risk<=0.3) { barcolors.push("green")}
+        else if(risk<=0.7) { barcolors.push("yellow")}
+        else { barcolors.push("red")}
+    }
+    const ctx = document.getElementById('myChart');
+    new Chart(ctx ,{
+        type: "bar",
+        data : {
+            labels: xvalues,
+            datasets : [{
+                backgroundColor : barcolors,
+                data: yvalues
+            }]
+        },
+        options: {
+            plugins: {
+            legend: {display: false},
+            title: {
+                display: true,
+                text: "Financial Risk Analysis",
+                font: {size: 16}
+            }
+            }
+        }
+    });
+    </script>
 </body>
 </html>
