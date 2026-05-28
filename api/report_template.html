@@ -88,7 +88,70 @@
             color: #bcbcd3;
             text-transform: uppercase;
         }
-
+        .risk_analysis_div .risk-row{
+            display: flex;
+            align-items: center;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+        .risk_analysis_div .risk-label{
+            display: flex;
+            width: 180px;
+            font-size: 13px;
+            color: #bcbcd3;
+        }
+        .risk_analysis_div .risk-bar-container{
+            flex: 1;
+            background: #0c0c4a;
+            border-radius: 4px;
+            height: 20px;
+            margin: 0 12px;
+        }
+        .risk-bar {
+            height: 10px;
+            border-radius: 4px;
+        }
+        .risk-value {
+            width: 40px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 13px;
+            color: #dddde1;
+        }
+        .financial-metric-table-div {
+            display: flex;
+            background-color: #040122;
+            border:1px solid #0c0cad;
+            border-radius: 12px;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap : 10px;
+            margin-top: 24px;
+            padding: 10px 10px;
+        }
+        .financial-metric-table-div .header {
+            font-size : 20px;
+            color: #bcbcd3;
+            font-weight: 200;
+            text-transform: uppercase;
+        }
+        .financial-metric-table-div table {
+            width: 100%;
+            border-collapse: seperate;
+            border-spacing: 10px 10px;
+            table-layout: fixed;
+            gap: 20px;
+        }
+        .financial-metric-table-div tr,th,td {
+            border: 1px solid #3c3681;
+            background-color: #060237;
+            border-radius: 12px;
+            color: #bcbcd3;
+            padding: 8px;
+            text-align: left;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -111,39 +174,55 @@
         </div>
         <div class="risk_analysis_div">
             <div class="heading">Risk Analysis</div>
-            <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+            <div class="risk-row">
+                <div class="risk-label">Liquidity Risk</div>
+                <div class = "risk-bar-container">
+                    <div class="risk-bar" style="width: {{liquidity_pct}}%; background: {{liquidity_color}}"></div>
+                </div>
+                <div class="risk-value">{{liquidity_risk}}</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Credit Risk</div>
+                <div class = "risk-bar-container">
+                    <div class="risk-bar" style="width: {{credit_pct}}%; background: {{credit_color}}"></div>
+                </div>
+                <div class="risk-value">{{credit_risk}}</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Concentration Risk</div>
+                <div class = "risk-bar-container">
+                    <div class="risk-bar" style="width: {{concentration_pct}}%; background: {{concentration_color}}"></div>
+                </div>
+                <div class="risk-value">{{concentration_risk}}</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Market Risk</div>
+                <div class = "risk-bar-container">
+                    <div class="risk-bar" style="width: {{market_pct}}%; background: {{market_color}}"></div>
+                </div>
+                <div class="risk-value">{{market_risk}}</div>
+            </div>
+            <div class="risk-row">
+                <div class="risk-label">Overall Risk</div>
+                <div class = "risk-bar-container">
+                    <div class="risk-bar" style="width: {{overall_pct}}%; background: {{overall_color}}"></div>
+                </div>
+                <div class="risk-value">{{overall_risk}}</div>
+            </div>
+        </div>
+        <div class="financial-metric-table-div">
+            <div class="header">Financial Risk Key Metrics</div>
+            <table>
+                <tr><th>Financial Term</th><th>Value</th></tr>
+                <tr><td>Price to Earnings Ratio</td><td>{{ pe_ratio }}</td></tr>
+                <tr><td>Debt to Equity Ratio</td><td>{{ debt_to_equity }}</td></tr>
+                <tr><td>Revenue Growth</td><td>{{ revenue_growth }}</td></tr>
+                <tr><td>Revenue Growth</td><td>{{ revenue_growth }}</td></tr>
+                <tr><td>Current Ratio</td><td>{{ current_ratio }}</td></tr>
+                <tr><td>Return on Equity</td><td>{{ return_on_equity }}</td></tr>
+                <tr><td>Gross Margins</td><td>{{ gross_margins }}</td></tr>
+            </table>
         </div>
     </div>
-    <script>
-    const xvalues = ["liquidity_risk","credit_risk","concentration_risk","market_risk","overall_risk"]
-    const yvalues = [0.95,0.8,0.5,0.2,0.5]
-    const barcolors = []
-    for(let risk of yvalues){
-        if(risk<=0.3) { barcolors.push("green")}
-        else if(risk<=0.7) { barcolors.push("yellow")}
-        else { barcolors.push("red")}
-    }
-    const ctx = document.getElementById('myChart');
-    new Chart(ctx ,{
-        type: "bar",
-        data : {
-            labels: xvalues,
-            datasets : [{
-                backgroundColor : barcolors,
-                data: yvalues
-            }]
-        },
-        options: {
-            plugins: {
-            legend: {display: false},
-            title: {
-                display: true,
-                text: "Financial Risk Analysis",
-                font: {size: 16}
-            }
-            }
-        }
-    });
-    </script>
 </body>
 </html>
