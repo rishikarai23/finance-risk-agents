@@ -241,6 +241,7 @@
             <input type="text" id="ticker" placeholder="Ticker (eg AAPL)"/>
             <input type="text" id="company_name" placeholder="Company Name (eg Apple Inc)"/>
             <button id="analyzeBtn" onclick="analyze()">Analyze</button>
+            <button id="downloadBtn" onclick="downloadpdf()" style="display:none; background:#1a1d8a;">Download</button>
         </div>
         <div class="live-feed" id="liveFeed">
             <h3>Live Agent Updates</h3>
@@ -284,6 +285,7 @@
     </div>
     <script>
         let ws=null
+        let lastAnalysisResult = null
         function getRiskClass(score){
             if (score<=3) return "risk-low";
             if (score<=6) return "risk-medium";
@@ -326,6 +328,8 @@
                     addFeedItem(data.update,type);
                 }
                 if (data.complete) {
+                    lastAnalysisResult = data;
+                    document.getElementById('downloadBtn').style.display = 'block';
                     addFeedItem("Analysis Complete",'success')
                     showResults(data)
                     document.getElementById('analyzeBtn').disabled = false;
@@ -382,8 +386,49 @@
             }
 
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-
         }  
+        async function downloadpdf() {
+            if (!lastAnalysisResult){
+                alert("Run an Analysis First");
+                return;
+            }
+            document.getElementById("downloadBtn").textContent = 'Generating Pdf ....'
+            document.getElementById('downloadBtn').disabled = true;
+            const response = await fetch('/generate-pdf',{
+                method: "POST",
+                headers: {'Content-Type' : 'application/json'},
+                body : JSON.stringify({
+                    ticker: document.getElementById('ticker').value.trim(),
+                    company_name: document.getElementById('company_name').value.trim(),
+                    overall_risk: lastAnalysisResult.overall_risk,
+                    sentiment_score: lastAnalysisResult.sentiment_score,
+                    contradictions: lastAnalysisResult.contradictions,
+                    final_memo: lastAnalysisResult.final_memo,
+                    tokens_used: lastAnalysisResult.tokens_used,
+                    pe_ratio: lastAnalysisResult.pe_ratio,
+                    debt_to_equity: lastAnalysisResult.debt_to_equity,
+                    revenue_growth: lastAnalysisResult.revenue_growth,
+                    current_ratio: lastAnalysisResult.current_ratio,
+                    return_on_equity: lastAnalysisResult.return_on_equity,
+                    gross_margins: lastAnalysisResult.gross_margins,
+                    liquidity_risk: lastAnalysisResult.liquidity_risk,
+                    credit_risk: lastAnalysisResult.credit_risk,
+                    concentration_risk: lastAnalysisResult.concentration_risk,
+                    market_risk: lastAnalysisResult.market_risk,
+                    historical_context: lastAnalysisResult.historical_context || [],
+                    news_summary: lastAnalysisResult.news_summary || '',
+                    created_at: new Date().toISOString()
+                })
+            })
+            const blob = await response.blob()
+            const url = URL.createObjectURL(blob)
+            const a = document.createElement('a')
+            a.href = url;
+            a.download = `${document.getElementById('ticker').value.trim()}-risk-report.pdf`;
+            a.click()
+            document.getElementById('downloadBtn').textContent = '📄 Download PDF Report';
+            document.getElementById('downloadBtn').disabled = false;
+        }
     </script>
 </body>
 </html>

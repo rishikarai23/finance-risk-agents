@@ -96,7 +96,8 @@ async def run(ticker:str,company_name:str,max_tokens:int=50000,websocket=None)->
             "contradictions": context.contradictions,
             "final_memo": context.final_memo,
             "tokens_used": context.tokens_used,
-            "audit_log" : context.audit_log
+            "audit_log" : context.audit_log,
+            "news_summary" : context.news_summary
         })
         
     return context
