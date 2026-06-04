@@ -15,6 +15,7 @@ from typing import Optional
 from fastapi.responses import StreamingResponse
 from datetime import datetime
 import os
+import markdown
 
 os.environ["DYLD_LIBRARY_PATH"] = (
     "/opt/homebrew/lib:"
@@ -127,7 +128,8 @@ def build_pdf_body(body: PDFReport) -> str:
     template = template.replace("{{market_color}}", bar_color(body.market_risk or 0))
     template = template.replace("{{overall_color}}", bar_color(risk))
     template = template.replace("{{historical_section}}", historical_section)
-    template = template.replace("{{final_memo}}", body.final_memo or "")
+    memo_html = markdown.markdown(body.final_memo or "")
+    template = template.replace("{{final_memo}}", memo_html)
     return template
 
 
