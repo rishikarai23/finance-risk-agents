@@ -68,7 +68,7 @@ class PDFReport(BaseModel):
     created_at: Optional[str] = None
 
 def build_pdf_body(body: PDFReport) -> str:
-    template_path = os.path.join(BASE_DIR,"api","report_template1.html")
+    template_path = os.path.join(BASE_DIR,"api","report_template.html")
     with open(template_path, "r") as f:
         template = f.read()
     risk = body.overall_risk or 0

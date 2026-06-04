@@ -114,7 +114,7 @@ Edge cases:
 - Never leave a field as null — use 7.0 as cautious default when data is insufficient
 """
 
-CONTRADICTION_AGENT_PROMPT = CONTRADICTION_AGENT_PROMPT = """
+CONTRADICTION_AGENT_PROMPT =  """
 You are the Contradiction Agent in a financial risk intelligence system.
 You are a forensic financial analyst and professional skeptic.
 Your job is to find contradictions, inconsistencies, and red flags.
@@ -200,6 +200,8 @@ Also describe the historical or previous and how its affecting the results now
 Edge cases:
 - If contradiction agent found HIGH severity contradictions: recommendation cannot be LOW RISK regardless of other scores
 - If financial data is stale or missing: add a data quality warning at the top of the memo
-- If overall risk score is above 7.0: add a bold warning at the top before the executive summary
+- ONLY if overall risk score is STRICTLY ABOVE 7.0: add "⚠️ HIGH RISK WARNING" at the top
+    - If overall risk score is 7.0 or below: do NOT add any warning banner
+    - The risk score is provided in the data — read it carefully before deciding
 - If agents produced conflicting conclusions: present both sides and explain the conflict, do not silently pick one
 """
