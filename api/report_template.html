@@ -48,6 +48,7 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
+            padding-bottom: 15px;
         }
         .scorescard .label {
             font-size: 20px;
@@ -60,13 +61,6 @@
         .scorescard .value {
             font-size: 30px;
             font-weight: 500;  
-        }
-        .scorescard .sublabel {
-            font-size: 15px;
-            font-weight: 10px;
-            margin-top: 12px;
-            color: #8a85c4;
-            font-weight: 100;
         }
         .risk-low { color: green;}
         .risk-medium { color: orange}
@@ -104,7 +98,7 @@
             flex: 1;
             background: #0c0c4a;
             border-radius: 4px;
-            height: 20px;
+            height: 10px;
             margin: 0 12px;
         }
         .risk-bar {
@@ -152,6 +146,76 @@
             text-align: left;
             font-size: 15px;
         }
+        .contradictions-container {
+            border: 1px solid #0c0cad;
+            background-color: #040122;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 24px;
+            margin-bottom: 24px;
+            padding-bottom: 10px;
+        }
+        .contradictions-container h1 {
+            font-size: 20px;
+            font-weight: 200;
+            color: #bcbcd3;
+            text-transform: uppercase;
+        }
+        .contradictions-container .contradictions {
+            border:1px solid #650707;
+            background-color: #dc0e0e3f;
+            border-radius: 12px;
+            color: #b8b5b5;
+            font-size: 15px;
+            font-weight: 100px;
+            display: flex;
+            padding: 10px;
+            width: 80%;          
+        }
+        .news_summary {
+            border: 1px solid #0c0cad;
+            background-color: #040122;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 24px;
+            margin-bottom: 24px;
+            padding-bottom: 10px;
+            color: #b8b5b5;
+        }
+        .news_summary h1 {
+            font-size: 20px;
+            font-weight: 200;
+            color: #bcbcd3;
+            text-transform: uppercase;
+        }
+        .final_memo {
+            border: 1px solid #0c0cad;
+            background-color: #040122;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 24px;
+            margin-bottom: 24px;
+            padding-bottom: 10px;
+            color: #b8b5b5;
+        }
+        .final_memo h1 {
+            font-size: 20px;
+            font-weight: 200;
+            color: #bcbcd3;
+            text-transform: uppercase;
+        }
     </style>
 </head>
 <body>
@@ -161,15 +225,15 @@
         <div class="scoregrid">
             <div class="scorescard">
                 <div class="label">Contradictions</div>
-                <div class="value" id="contradiction">-</div>
+                <div class="value" id="contradiction">{{ contradiction_count }}</div>
             </div>
             <div class="scorescard">
                 <div class="label">Overall Risk Score</div>
-                <div class="value" id="riskscore">-</div>
+                <div class="value" id="riskscore">{{ overall_risk_score }}</div>
             </div>
             <div class="scorescard">
                 <div class="label">Sentiment Score</div>
-                <div class="value" id="sentimentscore">-</div>
+                <div class="value" id="sentimentscore">{{ sentiment_score }}</div>
             </div>
         </div>
         <div class="risk_analysis_div">
@@ -177,7 +241,7 @@
             <div class="risk-row">
                 <div class="risk-label">Liquidity Risk</div>
                 <div class = "risk-bar-container">
-                    <div class="risk-bar" style="width: {{liquidity_pct}}%; background: {{liquidity_color}}"></div>
+                    <div class="risk-bar" style="width: {{liquidity_pct}} %; background: {{liquidity_color}}"></div>
                 </div>
                 <div class="risk-value">{{liquidity_risk}}</div>
             </div>
@@ -217,11 +281,22 @@
                 <tr><td>Price to Earnings Ratio</td><td>{{ pe_ratio }}</td></tr>
                 <tr><td>Debt to Equity Ratio</td><td>{{ debt_to_equity }}</td></tr>
                 <tr><td>Revenue Growth</td><td>{{ revenue_growth }}</td></tr>
-                <tr><td>Revenue Growth</td><td>{{ revenue_growth }}</td></tr>
                 <tr><td>Current Ratio</td><td>{{ current_ratio }}</td></tr>
                 <tr><td>Return on Equity</td><td>{{ return_on_equity }}</td></tr>
                 <tr><td>Gross Margins</td><td>{{ gross_margins }}</td></tr>
             </table>
+        </div>
+        <div class="contradictions-container">
+            <h1>Contradictions</h1>
+            {{ contradictions_html }}
+        </div>
+        <div class="news_summary">
+            <h1>News Summary</h1>
+            {{ news_summary_html }}
+        </div>
+        {{historical_section}}
+        <div class="final_memo">
+            <h1>Final Report</h1>
         </div>
     </div>
 </body>
