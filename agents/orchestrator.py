@@ -96,8 +96,19 @@ async def run(ticker:str,company_name:str,max_tokens:int=50000,websocket=None)->
             "contradictions": context.contradictions,
             "final_memo": context.final_memo,
             "tokens_used": context.tokens_used,
-            "audit_log" : context.audit_log,
-            "news_summary" : context.news_summary
+            "audit_log": context.audit_log,
+            "news_summary": context.news_summary,
+            "pe_ratio": context.pe_ratio,
+            "debt_to_equity": context.debt_to_equity,
+            "revenue_growth": context.revenue_growth,
+            "current_ratio": context.current_ratio,
+            "return_on_equity": context.return_on_equity,
+            "gross_margins": context.gross_margins,
+            "liquidity_risk": context.liquidity_risk,
+            "credit_risk": context.credit_risk,
+            "concentration_risk": context.concentration_risk,
+            "market_risk": context.market_risk,
+            "historical_context": context.historical_context,
         })
         
     return context

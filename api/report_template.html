@@ -221,19 +221,19 @@
 <body>
     <div class="container">
         <h1>Financial Risk Analysis</h1>
-        <p class="subtitle">This is the pdf report for {{company_name }} and was created at {{created_at }}</p>
+        <p class="subtitle">This is the pdf report for {{company_name}} and was created at {{created_at}}</p>
         <div class="scoregrid">
             <div class="scorescard">
                 <div class="label">Contradictions</div>
-                <div class="value" id="contradiction">{{ contradiction_count }}</div>
+                <div class="value" id="contradiction">{{contradiction_count}}</div>
             </div>
             <div class="scorescard">
                 <div class="label">Overall Risk Score</div>
-                <div class="value" id="riskscore">{{ overall_risk_score }}</div>
+                <div class="value" id="riskscore">{{overall_risk}}</div>
             </div>
             <div class="scorescard">
                 <div class="label">Sentiment Score</div>
-                <div class="value" id="sentimentscore">{{ sentiment_score }}</div>
+                <div class="value" id="sentimentscore">{{sentiment_score}}</div>
             </div>
         </div>
         <div class="risk_analysis_div">
@@ -241,7 +241,7 @@
             <div class="risk-row">
                 <div class="risk-label">Liquidity Risk</div>
                 <div class = "risk-bar-container">
-                    <div class="risk-bar" style="width: {{liquidity_pct}} %; background: {{liquidity_color}}"></div>
+                    <div class="risk-bar" style="width: {{liquidity_pct}}%; background: {{liquidity_color}}"></div>
                 </div>
                 <div class="risk-value">{{liquidity_risk}}</div>
             </div>
@@ -278,25 +278,26 @@
             <div class="header">Financial Risk Key Metrics</div>
             <table>
                 <tr><th>Financial Term</th><th>Value</th></tr>
-                <tr><td>Price to Earnings Ratio</td><td>{{ pe_ratio }}</td></tr>
-                <tr><td>Debt to Equity Ratio</td><td>{{ debt_to_equity }}</td></tr>
-                <tr><td>Revenue Growth</td><td>{{ revenue_growth }}</td></tr>
-                <tr><td>Current Ratio</td><td>{{ current_ratio }}</td></tr>
-                <tr><td>Return on Equity</td><td>{{ return_on_equity }}</td></tr>
-                <tr><td>Gross Margins</td><td>{{ gross_margins }}</td></tr>
+                <tr><td>Price to Earnings Ratio</td><td>{{pe_ratio}}</td></tr>
+                <tr><td>Debt to Equity Ratio</td><td>{{debt_to_equity}}</td></tr>
+                <tr><td>Revenue Growth</td><td>{{revenue_growth}}</td></tr>
+                <tr><td>Current Ratio</td><td>{{current_ratio}}</td></tr>
+                <tr><td>Return on Equity</td><td>{{return_on_equity}}</td></tr>
+                <tr><td>Gross Margins</td><td>{{gross_margins}}</td></tr>
             </table>
         </div>
         <div class="contradictions-container">
             <h1>Contradictions</h1>
-            {{ contradictions_html }}
+            {{contradictions_html}}
         </div>
         <div class="news_summary">
             <h1>News Summary</h1>
-            {{ news_summary_html }}
+            {{news_summary}}
         </div>
         {{historical_section}}
         <div class="final_memo">
             <h1>Final Report</h1>
+            <p style="padding: 15px; white-space: pre-wrap;">{{final_memo}}</p>
         </div>
     </div>
 </body>
